@@ -51,9 +51,7 @@ function toposort.toposort(items, item2deps)
         end
     end
     for _, item in ipairs(items) do
-        if not marked_permanently[item] then
-            visit(item)
-        end
+        visit(item)
     end
     assert(#build_list_reversed == n)
     local build_list = toposort.reverse(build_list_reversed)
