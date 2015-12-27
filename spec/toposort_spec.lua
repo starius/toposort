@@ -37,4 +37,16 @@ describe("Topological sorting", function()
         )
     end)
 
+    it("return a map from iteem to its index in the list",
+    function()
+        local toposort = require 'toposort'
+        assert.same(
+            {
+                a = 1,
+                b = 2,
+                c = 3,
+            },
+            toposort.findIndices({'a', 'b', 'c'})
+        )
+    end)
 end)

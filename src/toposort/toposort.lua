@@ -61,4 +61,15 @@ function toposort.toposort(items, item2deps)
     return build_list
 end
 
+-- return a map from iteem to its index in the list
+function toposort.findIndices(list)
+    local item2index = {}
+    for index, item in ipairs(list) do
+        assert(not item2index[item],
+            'Duplicate item: ' .. item)
+        item2index[item] = index
+    end
+    return item2index
+end
+
 return toposort
