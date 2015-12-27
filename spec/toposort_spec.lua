@@ -163,3 +163,70 @@ describe("Function toposort.findRelated", function()
     end)
 
 end)
+
+describe("Function toposort.areUnrelatedSwapped", function()
+
+    it("return true if all unrelated items are disordered",
+    function()
+        --[[
+        k -> l
+        m -> n
+        ]]
+        local toposort = require 'toposort'
+        assert.same(
+            true,
+            toposort.areUnrelatedSwapped(
+                {'k', 'l', 'm', 'n'},
+                {'m', 'n', 'k', 'l'},
+                {
+                    l = {'k'},
+                    n = {'m'},
+                }
+            )
+        )
+    end)
+
+    it("return false,a,b if unrelated a,b are ordered",
+    function()
+        --[[
+        k -> l
+        m -> n
+        ]]
+        local toposort = require 'toposort'
+        local ok, a, b = toposort.areUnrelatedSwapped(
+            {'k', 'l', 'm', 'n'},
+            {'m', 'k', 'n', 'l'},
+            {
+                l = {'k'},
+                n = {'m'},
+            }
+        )
+        assert.same({false, 'k', 'n'}, {ok, a, b})
+    end)
+
+    it("case of 5 items", function()
+        --[[
+                 a -> b
+                 |
+                 v
+            c -> d
+            |
+            v
+            e
+        ]]
+        local toposort = require 'toposort'
+        assert.same(
+            true,
+            toposort.areUnrelatedSwapped(
+                {'c', 'e', 'a', 'd', 'b'},
+                {'a', 'b', 'c', 'd', 'e'},
+                {
+                    b = {'a'},
+                    d = {'a', 'c'},
+                    e = {'c'},
+                }
+            )
+        )
+    end)
+
+end)
