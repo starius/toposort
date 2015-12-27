@@ -49,4 +49,40 @@ describe("Topological sorting", function()
             toposort.findIndices({'a', 'b', 'c'})
         )
     end)
+
+    it("return if build_list is ordered topologically",
+    function()
+        local toposort = require 'toposort'
+        assert.same(
+            true,
+            toposort.checkToposorted(
+                {'a', 'b', 'c'},
+                {
+                    b = {'a'},
+                    c = {'a'},
+                }
+            )
+        )
+        assert.same(
+            true,
+            toposort.checkToposorted(
+                {'a', 'c', 'b'},
+                {
+                    b = {'a'},
+                    c = {'a'},
+                }
+            )
+        )
+        local ok, item, dep = toposort.checkToposorted(
+            {'b', 'a'},
+            {
+                b = {'a'},
+            }
+        )
+        assert.same(
+            {false, 'b', 'a'},
+            {ok, item, dep}
+        )
+    end)
+
 end)

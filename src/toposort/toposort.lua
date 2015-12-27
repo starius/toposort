@@ -72,4 +72,19 @@ function toposort.findIndices(list)
     return item2index
 end
 
+-- return if build_list is ordered topologically
+-- if the list is not ordered, return two items, which
+-- should go in another order (item and its dependency)
+function toposort.checkToposorted(build_list, item2deps)
+    local item2index = toposort.findIndices(build_list)
+    for item, deps in pairs(item2deps) do
+        for _, dep in ipairs(deps) do
+            if item2index[item] < item2index[dep] then
+                return false, item, dep
+            end
+        end
+    end
+    return true
+end
+
 return toposort
