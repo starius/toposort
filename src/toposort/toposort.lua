@@ -94,4 +94,15 @@ function toposort.checkToposorted(build_list, item2deps)
     return true
 end
 
+function toposort.findRelated(item, item2deps, item2followers)
+    local function noop()
+    end
+    local related_set = {}
+    toposort.dfs(item, item2deps, related_set, {}, noop)
+    related_set[item] = nil
+    toposort.dfs(item, item2followers, related_set, {}, noop)
+    related_set[item] = nil
+    return related_set
+end
+
 return toposort

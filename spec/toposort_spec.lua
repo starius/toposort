@@ -137,3 +137,29 @@ describe("Function toposort.checkToposorted", function()
     end)
 
 end)
+
+describe("Function toposort.findRelated", function()
+
+    it("return set of related nodes", function()
+        local toposort = require 'toposort'
+        local item = 'b'
+        local item2followers = {
+            a = {'b', 'd'},
+            b = {'c'},
+            d = {'e'},
+        }
+        local item2deps = toposort.transpose(item2followers)
+        assert.same(
+            {
+                a = true,
+                c = true,
+            },
+            toposort.findRelated(
+                item,
+                item2deps,
+                item2followers
+            )
+        )
+    end)
+
+end)
