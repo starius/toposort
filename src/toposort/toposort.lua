@@ -26,6 +26,20 @@ function toposort.reverse(list)
     return reversed
 end
 
+function toposort.dfs(item1, graph, visited, in_stack, on_leave)
+    assert(not in_stack[item1], 'not a DAG')
+    if not visited[item1] then
+        in_stack[item1] = true
+        local followers = graph[item1] or {}
+        for _, item2 in ipairs(followers) do
+            toposort.dfs(item2, graph, visited, in_stack, on_leave)
+        end
+        visited[item1] = true
+        in_stack[item1] = nil
+        on_leave(item1)
+    end
+end
+
 -- return items ordered in build order
 -- this means, if item depends on item2, then
 -- item2 preceeds item1 in the list
@@ -36,19 +50,14 @@ function toposort.toposort(items, item2deps)
     -- https://en.wikipedia.org/wiki/Topological_sorting
     local build_list_reversed = {}
     local marked_permanently = {}
-    local marked_temporarily = {}
-    local function visit(item1)
-        assert(not marked_temporarily[item1], 'not a DAG')
-        if not marked_permanently[item1] then
-            marked_temporarily[item1] = true
-            local followers = item2followers[item1] or {}
-            for _, item2 in ipairs(followers) do
-                visit(item2)
+    local function visit(item)
+        local marked_temporarily = {}
+        toposort.dfs(item, item2followers,
+            marked_permanently, marked_temporarily,
+            function(item2)
+                table.insert(build_list_reversed, item2)
             end
-            marked_permanently[item1] = true
-            marked_temporarily[item1] = false
-            table.insert(build_list_reversed, item1)
-        end
+        )
     end
     for _, item in ipairs(items) do
         visit(item)

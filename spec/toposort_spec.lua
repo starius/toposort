@@ -27,6 +27,37 @@ describe("Function toposort.transpose", function()
 
 end)
 
+describe("Function toposort.dfs", function()
+
+    it("depth-first search", function()
+        local toposort = require 'toposort'
+        local graph = {
+            a = {'b', 'c'},
+            b = {'c'},
+            c = {'d'},
+        }
+        local visited = {}
+        local in_stack = {}
+        local left = {}
+        local function on_leave(item)
+            table.insert(left, item)
+        end
+        toposort.dfs('a', graph, visited, in_stack, on_leave)
+        assert.same(
+            {
+                a = true,
+                b = true,
+                c = true,
+                d = true,
+            },
+            visited
+        )
+        assert.same({}, in_stack)
+        assert.same({'d', 'c', 'b', 'a'}, left)
+    end)
+
+end)
+
 describe("Function toposort.toposort", function()
 
     it("makes topological ordering", function()
