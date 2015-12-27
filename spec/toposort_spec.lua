@@ -2,11 +2,15 @@
 -- Copyright (c) 2015 Boris Nagaev
 -- See the LICENSE file for terms of use.
 
-describe("Topological sorting", function()
+describe("Topological sorting module", function()
 
     it("loads 'toposort' module", function()
         require 'toposort'
     end)
+
+end)
+
+describe("Function toposort.transpose", function()
 
     it("transposes a graph", function()
         local toposort = require 'toposort'
@@ -20,6 +24,10 @@ describe("Topological sorting", function()
             })
         )
     end)
+
+end)
+
+describe("Function toposort.toposort", function()
 
     it("makes topological ordering", function()
         local toposort = require 'toposort'
@@ -37,6 +45,10 @@ describe("Topological sorting", function()
         )
     end)
 
+end)
+
+describe("Function toposort.findIndices", function()
+
     it("return a map from iteem to its index in the list",
     function()
         local toposort = require 'toposort'
@@ -50,8 +62,11 @@ describe("Topological sorting", function()
         )
     end)
 
-    it("return if build_list is ordered topologically",
-    function()
+end)
+
+describe("Function toposort.checkToposorted", function()
+
+    it("return true for ordered list", function()
         local toposort = require 'toposort'
         assert.same(
             true,
@@ -73,6 +88,11 @@ describe("Topological sorting", function()
                 }
             )
         )
+    end)
+
+    it("return false and conflisting pait for unordered list",
+    function()
+        local toposort = require 'toposort'
         local ok, item, dep = toposort.checkToposorted(
             {'b', 'a'},
             {
