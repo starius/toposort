@@ -121,7 +121,7 @@ describe("Function toposort.checkToposorted", function()
         )
     end)
 
-    it("return false and conflisting pait for unordered list",
+    it("return false and conflicting pair for disordered list",
     function()
         local toposort = require 'toposort'
         local ok, item, dep = toposort.checkToposorted(
