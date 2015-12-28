@@ -257,4 +257,61 @@ describe("Function toposort.areUnrelatedSwapped", function()
         )
     end)
 
+    local function generateLists(list)
+        return coroutine.wrap(function()
+            if #list == 1 then
+                coroutine.yield(list)
+            else
+                for excl = 1, #list do
+                    local list2 = {}
+                    for i = 1, #list do
+                        if i ~= excl then
+                            table.insert(list2, list[i])
+                        end
+                    end
+                    for list3 in generateLists(list2) do
+                        table.insert(list3, list[excl])
+                        coroutine.yield(list3)
+                    end
+                end
+            end
+        end)
+    end
+
+    it("prove that 'heart' can't be solved with 2 lists",
+    function()
+        --[[
+                 a -> b
+                 |    |
+                 v    |
+            c -> d    |
+            |         |
+            v         v
+            e ------> f
+        ]]
+        local toposort = require 'toposort'
+        local items = {'a', 'b', 'c', 'd', 'e', 'f'}
+        local item2deps = {
+            b = {'a'},
+            d = {'a', 'c'},
+            e = {'c'},
+            f = {'b', 'e'},
+        }
+        local lists = {}
+        for ll in generateLists(items) do
+            if toposort.checkToposorted(ll, item2deps) then
+                table.insert(lists, ll)
+            end
+        end
+        for i = 1, #lists do
+            for j = i + 1, #lists do
+                assert.falsy(
+                    toposort.areUnrelatedSwapped(
+                        {lists[i], lists[j]}, item2deps
+                    )
+                )
+            end
+        end
+    end)
+
 end)
