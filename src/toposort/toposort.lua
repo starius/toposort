@@ -115,10 +115,12 @@ function toposort.areUnrelatedSwapped(lists, item2deps)
         item2indexs[i] = toposort.findIndices(list)
     end
     local items = assert(lists[1])
-    for _, a in ipairs(items) do
+    for i = 1, #items do
+        local a = items[i]
         local bs = toposort.findRelated(a, item2deps, item2followers)
-        for _, b in ipairs(items) do
-            if not bs[b] and a ~= b then
+        for j = i + 1, #items do
+            local b = items[j]
+            if not bs[b] then
                 -- a and b are unrelated
                 local has_order = {}
                 for _, item2index in ipairs(item2indexs) do
