@@ -36,6 +36,21 @@ describe("Function toposort.reverse", function()
 
 end)
 
+describe("Function toposort.copy_list", function()
+
+    it("copies a list", function()
+        local toposort = require 'toposort'
+        assert.same({'a', 'b'}, toposort.copy_list({'a', 'b'}))
+    end)
+
+    it("doesn't return the argument", function()
+        local toposort = require 'toposort'
+        local list = {'a', 'b'}
+        assert.not_equal(list, toposort.copy_list(list))
+    end)
+
+end)
+
 describe("Function toposort.dfs", function()
 
     it("depth-first search", function()

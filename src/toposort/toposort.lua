@@ -26,6 +26,15 @@ function toposort.reverse(list)
     return reversed
 end
 
+function toposort.copy_list(list)
+    local n = #list
+    local copy = {}
+    for i = 1, n do
+        copy[i] = list[i]
+    end
+    return copy
+end
+
 function toposort.dfs(item1, graph, visited, in_stack, on_leave)
     assert(not in_stack[item1], 'not a DAG')
     if not visited[item1] then
