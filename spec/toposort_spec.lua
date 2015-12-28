@@ -27,6 +27,15 @@ describe("Function toposort.transpose", function()
 
 end)
 
+describe("Function toposort.reverse", function()
+
+    it("reverses a list", function()
+        local toposort = require 'toposort'
+        assert.same({'a', 'b'}, toposort.reverse({'b', 'a'}))
+    end)
+
+end)
+
 describe("Function toposort.dfs", function()
 
     it("depth-first search", function()
