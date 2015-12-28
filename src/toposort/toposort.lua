@@ -35,6 +35,19 @@ function toposort.copy_list(list)
     return copy
 end
 
+function toposort.shuffled(list, random)
+    random = random or math.random
+    local copy = toposort.copy_list(list)
+    local n = #list
+    for i = 1, n do
+        local j = random(i, n)
+        local tmp = copy[i]
+        copy[i] = copy[j]
+        copy[j] = tmp
+    end
+    return copy
+end
+
 function toposort.dfs(item1, graph, visited, in_stack, on_leave)
     assert(not in_stack[item1], 'not a DAG')
     if not visited[item1] then

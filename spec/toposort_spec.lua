@@ -51,6 +51,41 @@ describe("Function toposort.copy_list", function()
 
 end)
 
+describe("Function toposort.shuffled", function()
+
+    it("return a shuffled copy of a list", function()
+        local toposort = require 'toposort'
+        math.randomseed(0)
+        local list = {'a', 'b', 'c'}
+        local seen = {}
+        for i = 1, 1000 do
+            local shuffled = toposort.shuffled(list)
+            local str = table.concat(shuffled)
+            seen[str] = true
+        end
+        assert.equal(true, seen['abc'])
+        assert.equal(true, seen['acb'])
+        assert.equal(true, seen['bac'])
+        assert.equal(true, seen['bca'])
+        assert.equal(true, seen['cab'])
+        assert.equal(true, seen['cba'])
+    end)
+
+    it("gets random number generator argument", function()
+        local toposort = require 'toposort'
+        local list = {'a', 'b', 'c'}
+        local function random(x, y)
+            return x
+        end
+        local ref = toposort.shuffled(list, random)
+        for i = 1, 1000 do
+            local shuffled = toposort.shuffled(list, random)
+            assert.same(ref, shuffled)
+        end
+    end)
+
+end)
+
 describe("Function toposort.dfs", function()
 
     it("depth-first search", function()
