@@ -105,21 +105,28 @@ function toposort.findRelated(item, item2deps, item2followers)
     return related_set
 end
 
--- Return if unrelated items are ordered differently in two lists.
--- If a and b are unrelated and index(a) < index(b) in both lists,
+-- Return if unrelated items are ordered differently in some of lists
+-- If a and b are unrelated and index(a) < index(b) in all lists,
 -- return false, a, b. Otherwise return true.
-function toposort.areUnrelatedSwapped(build_list1, build_list2, item2deps)
+function toposort.areUnrelatedSwapped(lists, item2deps)
     local item2followers = toposort.transpose(item2deps)
-    local item2index1 = toposort.findIndices(build_list1)
-    local item2index2 = toposort.findIndices(build_list2)
-    for _, a in ipairs(build_list1) do
+    local item2indexs = {}
+    for i, list in ipairs(lists) do
+        item2indexs[i] = toposort.findIndices(list)
+    end
+    local items = assert(lists[1])
+    for _, a in ipairs(items) do
         local bs = toposort.findRelated(a, item2deps, item2followers)
-        for _, b in ipairs(build_list1) do
+        for _, b in ipairs(items) do
             if not bs[b] and a ~= b then
                 -- a and b are unrelated
-                local shift1 = item2index1[a] - item2index1[b]
-                local shift2 = item2index2[a] - item2index2[b]
-                if (shift1 < 0) == (shift2 < 0) then
+                local has_order = {}
+                for _, item2index in ipairs(item2indexs) do
+                    local shift = item2index[a] - item2index[b]
+                    local order = (shift < 0)
+                    has_order[order] = true
+                end
+                if not has_order[true] or not has_order[false] then
                     return false, a, b
                 end
             end

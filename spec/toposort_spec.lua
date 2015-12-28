@@ -176,8 +176,10 @@ describe("Function toposort.areUnrelatedSwapped", function()
         assert.same(
             true,
             toposort.areUnrelatedSwapped(
-                {'k', 'l', 'm', 'n'},
-                {'m', 'n', 'k', 'l'},
+                {
+                    {'k', 'l', 'm', 'n'},
+                    {'m', 'n', 'k', 'l'},
+                },
                 {
                     l = {'k'},
                     n = {'m'},
@@ -194,8 +196,10 @@ describe("Function toposort.areUnrelatedSwapped", function()
         ]]
         local toposort = require 'toposort'
         local ok, a, b = toposort.areUnrelatedSwapped(
-            {'k', 'l', 'm', 'n'},
-            {'m', 'k', 'n', 'l'},
+            {
+                {'k', 'l', 'm', 'n'},
+                {'m', 'k', 'n', 'l'},
+            },
             {
                 l = {'k'},
                 n = {'m'},
@@ -218,12 +222,36 @@ describe("Function toposort.areUnrelatedSwapped", function()
         assert.same(
             true,
             toposort.areUnrelatedSwapped(
-                {'c', 'e', 'a', 'd', 'b'},
-                {'a', 'b', 'c', 'd', 'e'},
+                {
+                    {'c', 'e', 'a', 'd', 'b'},
+                    {'a', 'b', 'c', 'd', 'e'},
+                },
                 {
                     b = {'a'},
                     d = {'a', 'c'},
                     e = {'c'},
+                }
+            )
+        )
+    end)
+
+    it("case of 3 lists", function()
+        --[[
+        k -> l
+        m -> n
+        ]]
+        local toposort = require 'toposort'
+        assert.same(
+            true,
+            toposort.areUnrelatedSwapped(
+                {
+                    {'k', 'l', 'm', 'n'},
+                    {'m', 'k', 'n', 'l'},
+                    {'m', 'n', 'k', 'l'},
+                },
+                {
+                    l = {'k'},
+                    n = {'m'},
                 }
             )
         )
