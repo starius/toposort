@@ -105,33 +105,45 @@ function toposort.findRelated(item, item2deps, item2followers)
     return related_set
 end
 
--- Return if unrelated items are ordered differently in some of lists
--- If a and b are unrelated and index(a) < index(b) in all lists,
--- return false, a, b. Otherwise return true.
-function toposort.areUnrelatedSwapped(lists, item2deps)
+-- Return a list of all unrelated pairs {a, b}, such that
+-- index(a) < index(b). The list is ordered by index(a), index(b).
+function toposort.findUnrelated(items, item2deps)
     local item2followers = toposort.transpose(item2deps)
-    local item2indexs = {}
-    for i, list in ipairs(lists) do
-        item2indexs[i] = toposort.findIndices(list)
-    end
-    local items = assert(lists[1])
+    local unrelated = {}
     for i = 1, #items do
         local a = items[i]
         local bs = toposort.findRelated(a, item2deps, item2followers)
         for j = i + 1, #items do
             local b = items[j]
             if not bs[b] then
-                -- a and b are unrelated
-                local has_order = {}
-                for _, item2index in ipairs(item2indexs) do
-                    local shift = item2index[a] - item2index[b]
-                    local order = (shift < 0)
-                    has_order[order] = true
-                end
-                if not has_order[true] or not has_order[false] then
-                    return false, a, b
-                end
+                table.insert(unrelated, {a, b})
             end
+        end
+    end
+    return unrelated
+end
+
+-- Return if unrelated items are ordered differently in some of lists
+-- If a and b are unrelated and index(a) < index(b) in all lists,
+-- return false, a, b. Otherwise return true.
+function toposort.areUnrelatedSwapped(lists, item2deps)
+    local item2indexs = {}
+    for i, list in ipairs(lists) do
+        item2indexs[i] = toposort.findIndices(list)
+    end
+    local items = assert(lists[1])
+    local unrelated = toposort.findUnrelated(items, item2deps)
+    for _, pair in ipairs(unrelated) do
+        local a = pair[1]
+        local b = pair[2]
+        local has_order = {}
+        for _, item2index in ipairs(item2indexs) do
+            local shift = item2index[a] - item2index[b]
+            local order = (shift < 0)
+            has_order[order] = true
+        end
+        if not has_order[true] or not has_order[false] then
+            return false, a, b
         end
     end
     return true

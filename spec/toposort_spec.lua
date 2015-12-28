@@ -164,6 +164,39 @@ describe("Function toposort.findRelated", function()
 
 end)
 
+describe("Function toposort.findUnrelated", function()
+
+    it("return ordered list of unrelated nodes", function()
+        --[[
+        a --> b --> c
+        |
+        v
+        d --> e
+        ]]
+        local toposort = require 'toposort'
+        local item2followers = {
+            a = {'b', 'd'},
+            b = {'c'},
+            d = {'e'},
+        }
+        local items = {'a', 'b', 'c', 'd', 'e'}
+        local item2deps = toposort.transpose(item2followers)
+        assert.same(
+            {
+                {'b', 'd'},
+                {'b', 'e'},
+                {'c', 'd'},
+                {'c', 'e'},
+            },
+            toposort.findUnrelated(
+                items,
+                item2deps
+            )
+        )
+    end)
+
+end)
+
 describe("Function toposort.areUnrelatedSwapped", function()
 
     it("return true if all unrelated items are disordered",
