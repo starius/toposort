@@ -58,7 +58,7 @@ describe("Function toposort.shuffled", function()
         math.randomseed(0)
         local list = {'a', 'b', 'c'}
         local seen = {}
-        for i = 1, 1000 do
+        for _ = 1, 1000 do
             local shuffled = toposort.shuffled(list)
             local str = table.concat(shuffled)
             seen[str] = true
@@ -74,11 +74,11 @@ describe("Function toposort.shuffled", function()
     it("gets random number generator argument", function()
         local toposort = require 'toposort'
         local list = {'a', 'b', 'c'}
-        local function random(x, y)
+        local function random(x, _)
             return x
         end
         local ref = toposort.shuffled(list, random)
-        for i = 1, 1000 do
+        for _ = 1, 1000 do
             local shuffled = toposort.shuffled(list, random)
             assert.same(ref, shuffled)
         end
