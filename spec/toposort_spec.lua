@@ -280,14 +280,14 @@ describe("Function toposort.areUnrelatedSwapped", function()
         )
     end)
 
-    it("return false,a,b if unrelated a,b are ordered",
+    it("return false if unrelated a,b are ordered",
     function()
         --[[
         k -> l
         m -> n
         ]]
         local toposort = require 'toposort'
-        local ok, a, b = toposort.areUnrelatedSwapped(
+        local ok = toposort.areUnrelatedSwapped(
             {
                 {'k', 'l', 'm', 'n'},
                 {'m', 'k', 'n', 'l'},
@@ -297,7 +297,7 @@ describe("Function toposort.areUnrelatedSwapped", function()
                 n = {'m'},
             }
         )
-        assert.same({false, 'k', 'n'}, {ok, a, b})
+        assert.equal(false, ok)
     end)
 
     it("case of 5 items", function()

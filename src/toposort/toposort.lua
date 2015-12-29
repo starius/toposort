@@ -146,8 +146,6 @@ function toposort.findUnrelated(items, item2deps)
 end
 
 -- Return if unrelated items are ordered differently in some of lists
--- If a and b are unrelated and index(a) < index(b) in all lists,
--- return false, a, b. Otherwise return true.
 function toposort.areUnrelatedSwapped(lists, item2deps)
     local item2indexs = {}
     for i, list in ipairs(lists) do
@@ -165,7 +163,7 @@ function toposort.areUnrelatedSwapped(lists, item2deps)
             has_order[order] = true
         end
         if not has_order[true] or not has_order[false] then
-            return false, a, b
+            return false
         end
     end
     return true
