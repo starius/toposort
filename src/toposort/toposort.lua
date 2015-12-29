@@ -203,4 +203,20 @@ function toposort.coverUnrelated(items, item2deps, tries, random)
     return lists
 end
 
+-- collect all mentioned items in item2deps
+function toposort.collectItems(item2deps)
+    local items_set = {}
+    for item, destinations in pairs(item2deps) do
+        items_set[item] = true
+        for _, dest in ipairs(destinations) do
+            items_set[dest] = true
+        end
+    end
+    local items = {}
+    for item, _ in pairs(items_set) do
+        table.insert(items, item)
+    end
+    return items
+end
+
 return toposort

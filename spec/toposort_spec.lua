@@ -477,3 +477,20 @@ describe("Function toposort.coverUnrelated", function()
     end)
 
 end)
+
+describe("Function toposort.collectItems", function()
+
+    it("collect all mentioned items in item2deps",
+    function()
+        local toposort = require 'toposort'
+        local items = toposort.collectItems({
+            a = {'b', 'c'},
+            c = {'d'},
+            e = {'f'},
+            g = {},
+        })
+        table.sort(items)
+        assert.same('abcdefg', table.concat(items))
+    end)
+
+end)
