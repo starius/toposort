@@ -16,4 +16,9 @@ build = {
     modules = {
         ['toposort'] = 'src/toposort/toposort.lua',
     },
+    install = {
+        bin = {
+            "src/bin/cover_unrelated",
+        },
+    },
 }

@@ -1,0 +1,27 @@
+#!/usr/bin/env lua
+
+-- toposort,  Topological sorting
+-- Copyright (c) 2015 Boris Nagaev
+-- See the LICENSE file for terms of use.
+
+local toposort = require 'toposort'
+
+-- read deps
+local item2deps = {}
+for line in io.stdin:lines() do
+    local dep, follower = assert(line:match('(.*)\t(.*)'))
+    if not item2deps[follower] then
+        item2deps[follower] = {}
+    end
+    table.insert(item2deps[follower], dep)
+end
+
+local items = toposort.collectItems(item2deps)
+
+local tries = tonumber(arg[1])
+local lists = toposort.coverUnrelated(items, item2deps, tries)
+
+-- print lists
+for _, list in ipairs(lists) do
+    print(table.concat(list, '\t'))
+end
