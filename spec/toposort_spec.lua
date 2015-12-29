@@ -260,6 +260,28 @@ describe("Function toposort.findUnrelated", function()
 
 end)
 
+describe("Function toposort.coverPairs", function()
+
+    it("Filter out pairs {a, b} if index(a) < index(b)",
+    function()
+        local toposort = require 'toposort'
+        assert.same(
+            {
+                {'c', 'b'},
+            },
+            toposort.coverPairs(
+                {'a', 'b', 'c'},
+                {
+                    {'a', 'b'},
+                    {'a', 'c'},
+                    {'c', 'b'},
+                }
+            )
+        )
+    end)
+
+end)
+
 describe("Function toposort.areUnrelatedSwapped", function()
 
     it("return true if all unrelated items are disordered",

@@ -142,28 +142,28 @@ function toposort.findUnrelated(items, item2deps)
     return unrelated
 end
 
--- Return if unrelated items are ordered differently in some of lists
-function toposort.areUnrelatedSwapped(lists, item2deps)
-    local item2indexs = {}
-    for i, list in ipairs(lists) do
-        item2indexs[i] = toposort.findIndices(list)
-    end
-    local items = assert(lists[1])
-    local unrelated = toposort.findUnrelated(items, item2deps)
-    for _, pair in ipairs(unrelated) do
+-- Filter out pairs {a, b} if index(a) < index(b)
+function toposort.coverPairs(build_list, pairs_list)
+    local item2index = toposort.findIndices(build_list)
+    local unrelated = {}
+    for _, pair in ipairs(pairs_list) do
         local a = pair[1]
         local b = pair[2]
-        local has_order = {}
-        for _, item2index in ipairs(item2indexs) do
-            local shift = item2index[a] - item2index[b]
-            local order = (shift < 0)
-            has_order[order] = true
-        end
-        if not has_order[true] or not has_order[false] then
-            return false
+        if item2index[b] < item2index[a] then
+            table.insert(unrelated, pair)
         end
     end
-    return true
+    return unrelated
+end
+
+-- Return if unrelated items are ordered differently in some of lists
+function toposort.areUnrelatedSwapped(lists, item2deps)
+    local items = assert(lists[1])
+    local unrelated = toposort.findUnrelated(items, item2deps)
+    for _, list in ipairs(lists) do
+        unrelated = toposort.coverPairs(list, unrelated)
+    end
+    return #unrelated == 0
 end
 
 return toposort
