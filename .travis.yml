@@ -22,9 +22,13 @@ install:
 before_script:
   - luarocks install luacov-coveralls
   - luarocks install busted
+  - PATH="`ruby -e 'puts Gem.user_dir'`/bin:$PATH"
+  # source: https://wiki.archlinux.org/index.php/ruby#Setup
+  - gem install gist
 
 script:
   - busted -c
+  - curl -L http://git.io/vEdlr | cover_unrelated 1 | gist -a
 
 after_success:
   - luacov
