@@ -433,3 +433,47 @@ describe("Function toposort.areUnrelatedSwapped", function()
     end)
 
 end)
+
+describe("Function toposort.coverUnrelated", function()
+
+    it("Return a list of toposorted lists suitable for areUnrelatedSwapped",
+    function()
+        local toposort = require 'toposort'
+        local lists = toposort.coverUnrelated({'a', 'b'}, {})
+        -- convert lists to strings to compare them
+        local strings = {}
+        for _, list in ipairs(lists) do
+            table.insert(strings, table.concat(list))
+        end
+        table.sort(strings)
+        assert.same({'ab', 'ba'}, strings)
+    end)
+
+    it("solve 'heart'", function()
+        --[[
+                 a -> b
+                 |    |
+                 v    |
+            c -> d    |
+            |         |
+            v         v
+            e ------> f
+        ]]
+        local toposort = require 'toposort'
+        local items = {'a', 'b', 'c', 'd', 'e', 'f'}
+        local item2deps = {
+            b = {'a'},
+            d = {'a', 'c'},
+            e = {'c'},
+            f = {'b', 'e'},
+        }
+        math.randomseed(0)
+        local lists = toposort.coverUnrelated(items, item2deps)
+        for _, list in ipairs(lists) do
+            assert.truthy(toposort.checkToposorted(list, item2deps))
+        end
+        assert.truthy(toposort.areUnrelatedSwapped(lists, item2deps))
+        assert.truthy(#lists > 2)
+    end)
+
+end)

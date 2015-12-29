@@ -166,4 +166,28 @@ function toposort.areUnrelatedSwapped(lists, item2deps)
     return #unrelated == 0
 end
 
+-- Return a list of toposorted lists suitable for areUnrelatedSwapped
+function toposort.coverUnrelated(items, item2deps, random)
+    local lists = {}
+    local unrelated = toposort.findUnrelated(items, item2deps)
+    while #unrelated > 0 do
+        -- shuffle items and item2deps
+        items = toposort.shuffled(items, random)
+        local new_item2deps = {}
+        for item, deps in pairs(item2deps) do
+            new_item2deps[item] = toposort.shuffled(deps, random)
+        end
+        item2deps = new_item2deps
+        -- toposort
+        local list = toposort.toposort(items, item2deps)
+        -- filter out some unrelated pairs
+        local new_unrelated = toposort.coverPairs(list, unrelated)
+        if #new_unrelated < #unrelated then
+            table.insert(lists, list)
+            unrelated = new_unrelated
+        end
+    end
+    return lists
+end
+
 return toposort
