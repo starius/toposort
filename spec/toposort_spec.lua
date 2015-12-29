@@ -246,6 +246,10 @@ describe("Function toposort.findUnrelated", function()
                 {'b', 'e'},
                 {'c', 'd'},
                 {'c', 'e'},
+                {'d', 'b'},
+                {'d', 'c'},
+                {'e', 'b'},
+                {'e', 'c'},
             },
             toposort.findUnrelated(
                 items,

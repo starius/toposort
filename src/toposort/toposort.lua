@@ -127,17 +127,14 @@ function toposort.findRelated(item, item2deps, item2followers)
     return related_set
 end
 
--- Return a list of all unrelated pairs {a, b}, such that
--- index(a) < index(b). The list is ordered by index(a), index(b).
+-- Return a list of all unrelated pairs {a, b}, irdered by index
 function toposort.findUnrelated(items, item2deps)
     local item2followers = toposort.transpose(item2deps)
     local unrelated = {}
-    for i = 1, #items do
-        local a = items[i]
+    for _, a in ipairs(items) do
         local bs = toposort.findRelated(a, item2deps, item2followers)
-        for j = i + 1, #items do
-            local b = items[j]
-            if not bs[b] then
+        for _, b in ipairs(items) do
+            if not bs[b] and a ~= b then
                 table.insert(unrelated, {a, b})
             end
         end
