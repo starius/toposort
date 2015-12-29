@@ -15,11 +15,13 @@ env:
 
 before_install:
   - source .travis/setenv_lua.sh
-  - luarocks install luacov-coveralls
-  - luarocks install busted
 
 install:
   - luarocks make
+
+before_script:
+  - luarocks install luacov-coveralls
+  - luarocks install busted
 
 script:
   - busted -c
