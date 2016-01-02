@@ -494,3 +494,20 @@ describe("Function toposort.collectItems", function()
     end)
 
 end)
+
+describe("Function toposort.removeDeps", function()
+
+    it("filter out items which are deps of other items from list",
+    function()
+        local toposort = require 'toposort'
+        local list = {'d', 'c', 'a', 'b'}
+        local item2deps = {
+            b = {'a'},
+            d = {'c'},
+        }
+        local without_deps = toposort.removeDeps(list, item2deps)
+        table.sort(without_deps)
+        assert.same({'b', 'd'}, without_deps)
+    end)
+
+end)

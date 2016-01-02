@@ -219,4 +219,27 @@ function toposort.collectItems(item2deps)
     return items
 end
 
+-- filter out items which are deps of other items from list
+function toposort.removeDeps(list, item2deps)
+    list = toposort.toposort(list, item2deps)
+    local items_set = {}
+    for _, item in ipairs(list) do
+        items_set[item] = true
+    end
+    for _, item in ipairs(list) do
+        if items_set[item] then
+            toposort.dfs(item, item2deps, {}, {}, function(dep)
+                if dep ~= item then
+                    items_set[dep] = nil
+                end
+            end)
+        end
+    end
+    local new_items = {}
+    for item, _ in pairs(items_set) do
+        table.insert(new_items, item)
+    end
+    return new_items
+end
+
 return toposort
